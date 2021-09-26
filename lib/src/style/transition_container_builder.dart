@@ -82,6 +82,34 @@ class SlideBuilder extends TransitionContainerBuilder<Offset> {
   }
 }
 
+
+/// Slide transition builder.
+class UpperBuilder extends TransitionContainerBuilder<Offset> {
+  /// The target widget to slide with.
+  Widget child;
+
+  /// slide direction.
+  final bool reverse;
+
+  /// Create slide builder.
+  UpperBuilder(
+      {required Curve curve, required this.child, required this.reverse})
+      : super(curve);
+
+  @override
+  Widget build(Animation<Offset> animation) {
+    return SlideTransition(position: animation, child: child);
+  }
+
+  @override
+  Animation animation(AnimationController controller) {
+    return Tween<Offset>(
+      begin: reverse ? const Offset(0.0, -0.3) : Offset.zero,
+      end: reverse ?  Offset.zero : const Offset(0.0, -0.3),
+    ).animate(CurvedAnimation(parent: controller, curve: curve));
+  }
+}
+
 /// This flip animation is origin from [https://github.com/deven98/flip_box_bar/blob/master/lib/src/flip_box.dart]
 /// UX => ![](https://cdn.dribbble.com/users/1094383/screenshots/4811135/800_5.gif).
 class FlipBuilder extends TransitionContainerBuilder {

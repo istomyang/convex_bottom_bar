@@ -46,6 +46,14 @@ class TransitionContainer extends StatefulWidget {
     this.data,
   }) : builder = SlideBuilder(curve: curve, child: child, reverse: reverse);
 
+  TransitionContainer.upper({
+    required Widget child,
+    required Curve curve,
+    this.duration,
+    bool reverse = false,
+    this.data,
+  }) : builder = UpperBuilder(curve: curve, child: child, reverse: reverse);
+
   /// Wrap a widget with flip transition.
   TransitionContainer.flip({
     required Widget topChild,

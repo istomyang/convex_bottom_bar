@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import 'package:convex_bottom_bar/src/style/upper_tab_style.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../bar.dart';
@@ -105,6 +106,14 @@ DelegateBuilder supportedStyle(
         color: color,
         activeColor: activeColor,
         curve: curve,
+      );
+      break;
+    case TabStyle.upper:
+      builder = UpperTabStyle(
+          items: items,
+          activeColor: activeColor,
+          color: color,
+          curve: curve,
       );
       break;
     default:

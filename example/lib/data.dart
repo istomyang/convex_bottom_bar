@@ -63,6 +63,16 @@ class Data {
 
   static const curves = [
     ChoiceValue<Curve>(
+      title: 'Curves.Custom',
+      value: Cubic(0.41, 0.01, 0, 1.18),
+      label: 'The curve fastOutSlowIn is used',
+    ),
+    ChoiceValue<Curve>(
+      title: 'Curves.easeInOutBack',
+      value: Curves.easeInOutBack,
+      label: 'The curve fastOutSlowIn is used',
+    ),
+    ChoiceValue<Curve>(
       title: 'Curves.bounceInOut',
       label: 'The curve bounceInOut is used',
       value: Curves.bounceInOut,
@@ -117,8 +127,8 @@ class Data {
       TabItem<IconData>(icon: Icons.home, title: 'Home'),
       TabItem<IconData>(icon: Icons.map, title: "Discovery"),
       TabItem<IconData>(icon: Icons.publish, title: "Publish"),
-      TabItem<IconData>(icon: Icons.message, title: 'Message'),
-      TabItem<IconData>(icon: Icons.people, title: 'Profile'),
+      // TabItem<IconData>(icon: Icons.message, title: 'Message'),
+      // TabItem<IconData>(icon: Icons.people, title: 'Profile'),
     ];
   }
 }

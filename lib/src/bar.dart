@@ -87,6 +87,9 @@ enum TabStyle {
 
   /// User defined style
   custom,
+
+  /// custom for suoyi's vibrator
+  upper,
 }
 
 /// Online example can be found at http://hacktons.cn/convex_bottom_bar.
@@ -144,6 +147,9 @@ class ConvexAppBar extends StatefulWidget {
 
   /// The curve to use in the forward direction. Only works when tab style is not fixed.
   final Curve curve;
+
+  /// ms of duration of transition bar
+  final int durationOfBar;
 
   /// Construct a new appbar with internal style.
   ///
@@ -206,6 +212,7 @@ class ConvexAppBar extends StatefulWidget {
     TabStyle? style,
     Curve? curve,
     ChipBuilder? chipBuilder,
+    int? durationOfBar,
   }) : this.builder(
           key: key,
           itemBuilder: supportedStyle(
@@ -231,6 +238,7 @@ class ConvexAppBar extends StatefulWidget {
           cornerRadius: cornerRadius,
           curve: curve ?? Curves.easeInOut,
           chipBuilder: chipBuilder,
+          durationOfBar: durationOfBar ?? 600
         );
 
   /// Define a custom tab style by implement a [DelegateBuilder].
@@ -266,6 +274,7 @@ class ConvexAppBar extends StatefulWidget {
     this.cornerRadius,
     this.curve = Curves.easeInOut,
     this.chipBuilder,
+    required this.durationOfBar
   })  : assert(top == null || top <= 0, 'top should be negative'),
         assert(initialActiveIndex == null || initialActiveIndex < count,
             'initial index should < $count'),
@@ -354,7 +363,7 @@ class ConvexAppBar extends StatefulWidget {
 
   @override
   ConvexAppBarState createState() {
-    return ConvexAppBarState();
+    return ConvexAppBarState(durationOfBar: durationOfBar);
   }
 }
 
@@ -368,7 +377,10 @@ class ConvexAppBarState extends State<ConvexAppBar>
   TabController? _controller;
 
   int _previousTimestamp = 0;
-  static const _TRANSITION_DURATION = 150;
+
+  final int durationOfBar;
+
+  ConvexAppBarState({Key? key ,required this.durationOfBar});
 
   @override
   void initState() {
@@ -424,7 +436,7 @@ class ConvexAppBarState extends State<ConvexAppBar>
       from: from ?? _currentIndex,
       to: index,
       duration: Duration(
-          milliseconds: gap < _TRANSITION_DURATION ? 0 : _TRANSITION_DURATION),
+          milliseconds: gap < durationOfBar ? 0 : durationOfBar),
     );
     // ignore: unawaited_futures
     _animationController?.forward();
@@ -439,7 +451,8 @@ class ConvexAppBarState extends State<ConvexAppBar>
   Animation<double> _updateAnimation(
       {int? from,
       int? to,
-      Duration duration = const Duration(milliseconds: _TRANSITION_DURATION)}) {
+      Duration? duration}) {
+    duration ??= Duration(milliseconds: durationOfBar);
     if (from != null && (from == to) && _animation != null) {
       return _animation!;
     }
