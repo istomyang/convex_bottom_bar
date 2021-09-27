@@ -16,6 +16,7 @@
 
 import 'dart:math' as math;
 
+import 'package:convex_bottom_bar/src/style/upper_tab_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -145,11 +146,14 @@ class ConvexAppBar extends StatefulWidget {
   /// Elevation for the bar top edge.
   final double? elevation;
 
-  /// The curve to use in the forward direction. Only works when tab style is not fixed.
-  final Curve curve;
-
   /// ms of duration of transition bar
   final int durationOfBar;
+
+  /// ms of duration of transition item
+  final int durationOfItem;
+
+  /// Curves of bar
+  final Curve curveOfBar;
 
   /// Construct a new appbar with internal style.
   ///
@@ -212,7 +216,8 @@ class ConvexAppBar extends StatefulWidget {
     TabStyle? style,
     Curve? curve,
     ChipBuilder? chipBuilder,
-    int? durationOfBar,
+    int durationOfBar = 600,
+    int durationOfItem = 300
   }) : this.builder(
           key: key,
           itemBuilder: supportedStyle(
@@ -236,10 +241,61 @@ class ConvexAppBar extends StatefulWidget {
           top: top,
           elevation: elevation,
           cornerRadius: cornerRadius,
-          curve: curve ?? Curves.easeInOut,
           chipBuilder: chipBuilder,
-          durationOfBar: durationOfBar ?? 600
+          durationOfBar: durationOfBar,
+          durationOfItem: durationOfItem,
+          curveOfBar: curve ?? Curves.linear
         );
+
+  ConvexAppBar.suoyi({
+    Key? key,
+    required List<TabItem> items,
+    int? initialActiveIndex,
+    bool? disableDefaultTabController,
+    GestureTapIndexCallback? onTap,
+    TapNotifier? onTabNotify,
+    TabController? controller,
+    Color? color,
+    Color? activeColor,
+    Color? backgroundColor,
+    Gradient? gradient,
+    double? height,
+    double? curveSize,
+    double? top,
+    double? elevation,
+    double? cornerRadius,
+    ChipBuilder? chipBuilder,
+    int durationOfBar = 600,
+    Curve curveOfBar = Curves.linear,
+    int durationOfItem = 300,
+    Curve curveOfItem = Curves.linear,
+  }) : this.builder(
+      key: key,
+      itemBuilder: UpperTabStyle(
+        items: items,
+        activeColor: activeColor ?? Colors.white,
+        color: color ?? Colors.white60,
+        curve: curveOfItem,
+        duration: durationOfItem
+      ),
+      onTap: onTap,
+      onTapNotify: onTabNotify,
+      controller: controller,
+      backgroundColor: backgroundColor,
+      count: items.length,
+      initialActiveIndex: initialActiveIndex,
+      disableDefaultTabController: disableDefaultTabController ?? false,
+      gradient: gradient,
+      height: height,
+      curveSize: curveSize,
+      top: top,
+      elevation: elevation,
+      cornerRadius: cornerRadius,
+      chipBuilder: chipBuilder,
+      durationOfBar: durationOfBar,
+      durationOfItem: durationOfItem,
+      curveOfBar: curveOfBar
+  );
 
   /// Define a custom tab style by implement a [DelegateBuilder].
   ///
@@ -272,9 +328,10 @@ class ConvexAppBar extends StatefulWidget {
     this.top,
     this.elevation,
     this.cornerRadius,
-    this.curve = Curves.easeInOut,
     this.chipBuilder,
-    required this.durationOfBar
+    required this.durationOfBar,
+    required this.durationOfItem,
+    required this.curveOfBar
   })  : assert(top == null || top <= 0, 'top should be negative'),
         assert(initialActiveIndex == null || initialActiveIndex < count,
             'initial index should < $count'),
@@ -363,7 +420,7 @@ class ConvexAppBar extends StatefulWidget {
 
   @override
   ConvexAppBarState createState() {
-    return ConvexAppBarState(durationOfBar: durationOfBar);
+    return ConvexAppBarState();
   }
 }
 
@@ -377,10 +434,6 @@ class ConvexAppBarState extends State<ConvexAppBar>
   TabController? _controller;
 
   int _previousTimestamp = 0;
-
-  final int durationOfBar;
-
-  ConvexAppBarState({Key? key ,required this.durationOfBar});
 
   @override
   void initState() {
@@ -436,7 +489,7 @@ class ConvexAppBarState extends State<ConvexAppBar>
       from: from ?? _currentIndex,
       to: index,
       duration: Duration(
-          milliseconds: gap < durationOfBar ? 0 : durationOfBar),
+          milliseconds: gap < widget.durationOfBar ? 0 : widget.durationOfBar),
     );
     // ignore: unawaited_futures
     _animationController?.forward();
@@ -452,7 +505,7 @@ class ConvexAppBarState extends State<ConvexAppBar>
       {int? from,
       int? to,
       Duration? duration}) {
-    duration ??= Duration(milliseconds: durationOfBar);
+    duration ??= Duration(milliseconds: widget.durationOfBar);
     if (from != null && (from == to) && _animation != null) {
       return _animation!;
     }
@@ -464,7 +517,7 @@ class ConvexAppBarState extends State<ConvexAppBar>
     final controller = AnimationController(duration: duration, vsync: this);
     final curve = CurvedAnimation(
       parent: controller,
-      curve: widget.curve,
+      curve: widget.curveOfBar,
     );
     _animationController = controller;
     return _animation = Tween(begin: lower, end: upper).animate(curve);

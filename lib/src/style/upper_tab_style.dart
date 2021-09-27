@@ -10,20 +10,21 @@ class UpperTabStyle extends InnerBuilder {
   /// Curve for flip transition.
   final Curve curve;
 
+  final int duration;
+
   /// Create style builder.
   UpperTabStyle({
     required List<TabItem> items,
     required Color activeColor,
     required Color color,
     required this.curve,
+    required this.duration,
   }) : super(items: items, activeColor: activeColor, color: color);
 
   int _preActivate = -1;
 
   @override
   Widget build(BuildContext context, int index, bool active) {
-
-    var c = Curves.easeInOut;
 
     var pre = _preActivate;
     if (active) {
@@ -47,8 +48,8 @@ class UpperTabStyle extends InnerBuilder {
     if (active) {
       return TransitionContainer.upper(
         data: index,
-        duration: Duration(milliseconds: 300),
-        curve: c,
+        duration: Duration(milliseconds: duration),
+        curve: curve,
         child: Container(
           padding: EdgeInsets.only(bottom: 2),
           child: Column(
@@ -62,8 +63,8 @@ class UpperTabStyle extends InnerBuilder {
     if (pre == index) {
       return TransitionContainer.upper(
         reverse: true,
-        curve: c,
-        duration: Duration(milliseconds: 300),
+        curve: curve,
+        duration: Duration(milliseconds: duration),
         child: Container(
           padding: EdgeInsets.only(bottom: 2),
           child: Column(

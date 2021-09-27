@@ -183,6 +183,7 @@ class _State extends State<DefaultAppBarDemo> with SingleTickerProviderStateMixi
                 controller: _tabController,
                 onTap: (int i) => debugPrint('select index=$i'),
                 durationOfBar: 200,
+                durationOfItem: 300,
               )
             : ConvexAppBar.badge(
                 {3: _badge.text, 4: Icons.assistant_photo, 2: Colors.redAccent},

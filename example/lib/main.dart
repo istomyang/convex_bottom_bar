@@ -34,7 +34,7 @@ class _State extends State<MyApp> {
     return MaterialApp(
       initialRoute: "/",
       routes: {
-        "/": (_) => HelloConvexAppBar(),
+        "/": (_) => HeyConvexAppBar(),
         "/bar": (BuildContext context) => DefaultAppBarDemo(),
         "/custom": (BuildContext context) => CustomAppBarDemo(),
         "/fab": (BuildContext context) => ConvexButtonDemo(),
@@ -43,25 +43,72 @@ class _State extends State<MyApp> {
   }
 }
 
-class HelloConvexAppBar extends StatelessWidget {
+class HeyConvexAppBar extends StatefulWidget {
+  const HeyConvexAppBar({Key key}) : super(key: key);
+
+  @override
+  _HeyConvexAppBarState createState() => _HeyConvexAppBarState();
+}
+
+class _HeyConvexAppBarState extends State<HeyConvexAppBar> {
+  double _durationOfBar = 300;
+  double _durationOfItem = 100;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Hello ConvexAppBar')),
-      body: Center(
-          child: TextButton(
-        child: Text('Click to show full example'),
-        onPressed: () => Navigator.of(context).pushNamed('/bar'),
-      )),
-      bottomNavigationBar: ConvexAppBar(
-        style: TabStyle.react,
-        items: [
-          TabItem(icon: Icons.list),
-          TabItem(icon: Icons.calendar_today),
-          TabItem(icon: Icons.assessment),
+      body: Column(
+        children: [
+          Center(
+              child: TextButton(
+                child: Text('Click to show full example'),
+                onPressed: () => Navigator.of(context).pushNamed('/bar'),
+              )),
+          Row(children: [
+            Text("Duration of Bar, 300~1000"),
+            Slider(
+              value: _durationOfBar,
+              min: 100,
+              max: 1000,
+              divisions: 18,
+              label: _durationOfBar.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _durationOfBar = value;
+                });
+              },
+            )
+          ],),
+          Row(children: [
+            Text("Duration of Item, 100~700"),
+            Slider(
+              value: _durationOfItem,
+              min: 100,
+              max: 1000,
+              divisions: 18,
+              label: _durationOfItem.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _durationOfItem = value;
+                });
+              },
+            )
+          ],)
         ],
+      ),
+      bottomNavigationBar: ConvexAppBar.suoyi(
+          items: [
+            TabItem(title: "List", icon: Icons.list),
+            TabItem(title: "Today", icon: Icons.calendar_today),
+            TabItem(title: "Assessment", icon: Icons.assessment),
+          ],
         initialActiveIndex: 1,
         onTap: (int i) => print('click index=$i'),
+        durationOfItem: _durationOfItem.toInt(),
+        durationOfBar: _durationOfBar.toInt(),
+        curveOfBar: Cubic(0.41, 0.01, 0, 1.18),
+        curveOfItem: Curves.easeInOut,
       ),
     );
   }
