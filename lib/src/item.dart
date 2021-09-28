@@ -43,3 +43,6 @@ class TabItem<T> {
             'TabItem only support IconData and Widget'),
         blend = isIconBlend ?? (icon is IconData);
 }
+
+typedef GetWidget = Widget Function(bool active);
+
